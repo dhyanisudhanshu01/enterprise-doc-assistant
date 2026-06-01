@@ -6,3 +6,7 @@ pydantic
 pypdf
 pandas
 openpyxl
+
+langchain
+langchain-community
+langchain_text_splitters
