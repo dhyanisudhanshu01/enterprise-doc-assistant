@@ -3,7 +3,7 @@ import streamlit as st
 from app.services.chat_service import chat_service
 from app.utils.file_validator import validate_file
 from app.core.logger import app_logger
-
+from pathlib import Path
 
 st.set_page_config(
     page_title="Enterprise Document Assistant",
@@ -59,6 +59,12 @@ st.markdown(
 # File Upload
 # -------------------------
 
+UPLOAD_FOLDER = Path("data/uploads")
+UPLOAD_FOLDER.mkdir(
+    parents=True,
+    exist_ok=True
+)
+
 uploaded_files = st.file_uploader(
     "Upload Documents",
     accept_multiple_files=True,
@@ -69,7 +75,21 @@ if uploaded_files:
     for uploaded_file in uploaded_files:
 
         if validate_file(uploaded_file.name):
+            # Save file to disk
+            save_path = (
+                UPLOAD_FOLDER /
+                uploaded_file.name
+            )
 
+            with open(
+                save_path,
+                "wb"
+            ) as file:
+                file.write(
+                    uploaded_file.getbuffer()
+                )
+
+            # Update session state and log upload
             if (
                 uploaded_file.name
                 not in st.session_state.uploaded_files
