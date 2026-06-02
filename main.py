@@ -4,6 +4,17 @@ from app.services.chat_service import chat_service
 from app.utils.file_validator import validate_file
 from app.core.logger import app_logger
 from pathlib import Path
+from app.services.ingestion_service import (
+    ingestion_service
+)
+
+from app.services.chunking_service import (
+    chunking_service
+)
+
+from app.vectorstore.chroma_manager import (
+    chroma_manager
+)
 
 st.set_page_config(
     page_title="Enterprise Document Assistant",
@@ -60,6 +71,7 @@ st.markdown(
 # -------------------------
 
 UPLOAD_FOLDER = Path("data/uploads")
+
 UPLOAD_FOLDER.mkdir(
     parents=True,
     exist_ok=True
@@ -74,8 +86,31 @@ if uploaded_files:
 
     for uploaded_file in uploaded_files:
 
-        if validate_file(uploaded_file.name):
-            # Save file to disk
+        # Validate file type
+        if not validate_file(uploaded_file.name):
+
+            st.error(
+                f"Unsupported file: {uploaded_file.name}"
+            )
+
+            continue
+
+        # Prevent duplicate processing
+        if (uploaded_file.name
+            in st.session_state.uploaded_files):
+
+            st.warning(
+                f"{uploaded_file.name} has already been processed."
+            )
+
+            continue
+
+        try:
+
+            # -------------------------
+            # Save File
+            # -------------------------
+
             save_path = (
                 UPLOAD_FOLDER /
                 uploaded_file.name
@@ -85,30 +120,83 @@ if uploaded_files:
                 save_path,
                 "wb"
             ) as file:
+
                 file.write(
                     uploaded_file.getbuffer()
                 )
 
-            # Update session state and log upload
-            if (
-                uploaded_file.name
-                not in st.session_state.uploaded_files
-            ):
-                st.session_state.uploaded_files.append(
-                    uploaded_file.name
-                )
+            app_logger.info(
+                f"File saved: {uploaded_file.name}"
+            )
 
-            st.success(
-                f"{uploaded_file.name} uploaded successfully."
+            # -------------------------
+            # Ingest Document
+            # -------------------------
+
+            document = (
+                ingestion_service.ingest_document(
+                    str(save_path)
+                )
             )
 
             app_logger.info(
-                f"Uploaded file: {uploaded_file.name}"
+                f"Document ingested: "
+                f"{uploaded_file.name}"
             )
 
-        else:
+            # -------------------------
+            # Create Chunks
+            # -------------------------
+
+            chunks = (
+                chunking_service.create_chunks(
+                    document
+                )
+            )
+
+            app_logger.info(
+                f"Chunks created: {len(chunks)}"
+            )
+
+            # -------------------------
+            # Store in ChromaDB
+            # -------------------------
+
+            chroma_manager.add_documents(
+                chunks
+            )
+
+            app_logger.info(
+                f"Vectors stored for: "
+                f"{uploaded_file.name}"
+            )
+
+            # -------------------------
+            # Update Session State
+            # -------------------------
+
+            st.session_state.uploaded_files.append(
+                uploaded_file.name
+            )
+
+            # -------------------------
+            # Success Message
+            # -------------------------
+
+            st.success(
+                f"{uploaded_file.name} processed successfully."
+            )
+
+        except Exception as error:
+
+            app_logger.error(
+                f"Processing failed for "
+                f"{uploaded_file.name}: "
+                f"{str(error)}"
+            )
             st.error(
-                f"Unsupported file: {uploaded_file.name}"
+                f"Failed to process "
+                f"{uploaded_file.name}"
             )
 
 # -------------------------

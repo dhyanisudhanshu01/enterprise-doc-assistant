@@ -10,3 +10,7 @@ openpyxl
 langchain
 langchain-community
 langchain_text_splitters
+langchain-google-genai
+
+chromadb
+google-generativeai
