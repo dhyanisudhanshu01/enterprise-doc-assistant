@@ -231,13 +231,28 @@ if user_question:
     response = chat_service.get_response(
         user_question
     )
+    answer = response["answer"]
+    sources = response["sources"]
 
+    formatted_response = answer
+    if sources:
+
+        formatted_response += (
+            "\n\n### Sources\n"
+        )
+
+        for source in sources:
+
+            formatted_response += (
+                f"- {source['file_name']} "
+                f"(Chunk {source['chunk_id']})\n"
+            )    
     st.session_state.messages.append(
         {
             "role": "assistant",
-            "content": response,
+            "content": formatted_response,
         }
     )
 
     with st.chat_message("assistant"):
-        st.markdown(response)
+        st.markdown(formatted_response)

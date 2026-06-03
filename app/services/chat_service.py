@@ -1,15 +1,18 @@
+from app.services.rag_service import (
+    rag_service
+)
+
+
 class ChatService:
-    """
-    Temporary chat service.
+    def get_response(
+        self,
+        question: str,
+    ) -> dict:
 
-    In Phase 7 this will be replaced
-    by the complete RAG pipeline.
-    """
-
-    def get_response(self, question: str) -> str:
         return (
-            f"Received your question: '{question}'. "
-            f"RAG pipeline will be integrated in Phase 7."
+            rag_service.answer_question(
+                question
+            )
         )
 
 

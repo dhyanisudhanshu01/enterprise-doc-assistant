@@ -29,7 +29,7 @@ class ChromaManager:
                 name="enterprise_documents"
             )
         )
-
+    
     def add_documents(
         self,
         chunks,
@@ -56,6 +56,32 @@ class ChromaManager:
                     chunk.metadata
                 ],
             )
+
+    def similarity_search(
+    self,
+        query: str,
+        top_k: int = 5,
+    ):
+        """
+        Retrieve the most relevant chunks.
+        """
+
+        query_embedding = (
+            self.embedding_model.embed_query(
+                query
+            )
+        )
+
+        results = (
+            self.collection.query(
+                query_embeddings=[
+                    query_embedding
+                ],
+                n_results=top_k,
+            )
+        )
+
+        return results
 
 
 chroma_manager = ChromaManager()

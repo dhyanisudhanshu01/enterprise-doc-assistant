@@ -11,5 +11,6 @@ class Settings:
         self.chunk_size = int(os.getenv("CHUNK_SIZE", 5000))
         self.chunk_overlap = int(os.getenv("CHUNK_OVERLAP", 200))
         self.chroma_db_path = os.getenv("CHROMA_DB_PATH", "data/vector_db")
+        self.top_k_results = int(os.getenv("TOP_K_RESULTS", "5"))
 
 settings = Settings()
