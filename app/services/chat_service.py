@@ -1,5 +1,5 @@
-from app.services.rag_service import (
-    rag_service
+from app.agents.agent_service import (
+    agent_service
 )
 
 
@@ -10,7 +10,7 @@ class ChatService:
     ) -> dict:
 
         return (
-            rag_service.answer_question(
+            agent_service.answer_question(
                 question
             )
         )
