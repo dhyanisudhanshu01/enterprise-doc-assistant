@@ -28,6 +28,8 @@ class RetrievalService:
                 [[]]
             )[0]
         )
+        if not documents:
+            return []
 
         metadatas = (
             results.get(

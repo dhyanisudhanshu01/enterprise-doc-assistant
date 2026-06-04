@@ -87,7 +87,7 @@ if uploaded_files:
     for uploaded_file in uploaded_files:
 
         # Validate file type
-        if not validate_file(uploaded_file.name):
+        if not validate_file(uploaded_file.name, uploaded_file.size):
 
             st.error(
                 f"Unsupported file: {uploaded_file.name}"
