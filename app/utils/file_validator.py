@@ -1,6 +1,7 @@
 from pathlib import Path
+from app.core.config import settings
 
-MAX_FILE_SIZE_MB = 10
+MAX_FILE_SIZE_MB = settings.max_file_size_mb
 
 ALLOWED_EXTENSIONS = {
     ".pdf",

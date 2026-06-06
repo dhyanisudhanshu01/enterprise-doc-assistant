@@ -141,6 +141,9 @@ class EnterpriseCrew:
                 {question}
                 """
             ),
+            expected_output=(
+                "A clear plan outlining what information is needed."
+            ),
             agent=planner,
         )
 
@@ -151,6 +154,9 @@ class EnterpriseCrew:
 
                 {context}
                 """
+            ),
+            expected_output=(
+                "A summary of the most relevant information."
             ),
             agent=retriever,
         )
@@ -169,6 +175,10 @@ class EnterpriseCrew:
                 Generate a grounded answer.
                 """
             ),
+            expected_output=(
+                "A concise answer to the user's question, "
+                "fully supported by the provided context."
+            ),
             agent=reasoner,
         )
 
@@ -179,6 +189,9 @@ class EnterpriseCrew:
                 supported by the context.
                 """
             ),
+            expected_output=(
+                "A validation report confirming whether the answer is supported by the context."
+            ),
             agent=validator,
         )
 
@@ -187,6 +200,9 @@ class EnterpriseCrew:
                 """
                 Produce the final response.
                 """
+            ),
+            expected_output=(
+                "A user-friendly final response."
             ),
             agent=responder,
         )

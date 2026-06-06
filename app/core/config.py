@@ -12,5 +12,6 @@ class Settings:
         self.chunk_overlap = int(os.getenv("CHUNK_OVERLAP", 200))
         self.chroma_db_path = os.getenv("CHROMA_DB_PATH", "data/vector_db")
         self.top_k_results = int(os.getenv("TOP_K_RESULTS", "5"))
+        self.max_file_size_mb = int(os.getenv("MAX_FILE_SIZE_MB", "20"))
 
 settings = Settings()
