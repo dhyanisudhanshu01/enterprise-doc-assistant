@@ -1,14 +1,29 @@
-venv/
-
+# Environment
 .env
 
+# Python
 __pycache__/
 
 *.pyc
 
 .pytest_cache/
 
+# Virtual Environment
+venv/
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Chroma
+data/vector_db/
+
+# Logs
+logs/
+
+# IDE
+.vscode/
 .idea/
 
-.vscode/
-
+# OS
+.DS_Store
+Thumbs.db
