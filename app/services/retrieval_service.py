@@ -12,6 +12,7 @@ class RetrievalService:
     def retrieve(
         self,
         query: str,
+        session_id: str,
         top_k: int = settings.top_k_results,
     ):
 
@@ -19,6 +20,7 @@ class RetrievalService:
             chroma_manager.similarity_search(
                 query=query,
                 top_k=top_k,
+                session_id=session_id,
             )
         )
 

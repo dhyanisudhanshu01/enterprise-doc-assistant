@@ -8,6 +8,37 @@ from app.core.config import settings
 
 
 class ChromaManager:
+    def get_collection(
+            self,
+            session_id: str,
+        ):
+
+            collection_name = (
+                f"session_{session_id}"
+            )
+
+            return (
+                self.client.get_or_create_collection(
+                    name=collection_name
+                )
+            )
+
+    def delete_collection(
+        self,
+        session_id: str,):
+
+        collection_name = (
+            f"session_{session_id}"
+        )
+
+        try:
+
+            self.client.delete_collection(
+                collection_name
+            )
+
+        except Exception:
+            pass
 
     def __init__(self):
 
@@ -24,15 +55,12 @@ class ChromaManager:
             )
         )
 
-        self.collection = (
-            self.client.get_or_create_collection(
-                name="enterprise_documents"
-            )
-        )
+        
     
     def add_documents(
         self,
         chunks,
+        session_id: str,
     ):
 
         for chunk in chunks:
@@ -42,8 +70,10 @@ class ChromaManager:
                     chunk.content
                 )
             )
-
-            self.collection.add(
+            collection = (self.get_collection(
+                session_id
+            ))
+            collection.add(
                 ids=[
                     f"{chunk.metadata['file_name']}"
                     f"_{chunk.metadata['chunk_id']}"
@@ -61,6 +91,7 @@ class ChromaManager:
     self,
         query: str,
         top_k: int = 5,
+        session_id: str = None,
     ):
         """
         Retrieve the most relevant chunks.
@@ -71,9 +102,13 @@ class ChromaManager:
                 query
             )
         )
-
+        collection = (
+            self.get_collection(
+                session_id
+            )
+        )
         results = (
-            self.collection.query(
+            collection.query(
                 query_embeddings=[
                     query_embedding
                 ],

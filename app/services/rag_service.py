@@ -28,11 +28,13 @@ class RAGService:
     def answer_question(
         self,
         question: str,
+        session_id: str,
     ) -> dict:
 
         retrieved_chunks = (
             retrieval_service.retrieve(
-                question,
+                query=question,
+                session_id=session_id,
                 top_k=settings.top_k_results,
             )
         )

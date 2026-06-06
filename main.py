@@ -1,4 +1,5 @@
 import streamlit as st
+import uuid
 
 from app.services.chat_service import chat_service
 from app.utils.file_validator import validate_file
@@ -25,12 +26,18 @@ st.set_page_config(
 # -------------------------
 # Session State
 # -------------------------
+if "session_id" not in st.session_state:
+
+    st.session_state.session_id = (
+        str(uuid.uuid4())
+    )
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
 if "uploaded_files" not in st.session_state:
     st.session_state.uploaded_files = []
+
 
 
 # -------------------------
@@ -57,6 +64,7 @@ with st.sidebar:
 # Main Page
 # -------------------------
 
+
 st.title("Enterprise Document Assistant")
 
 st.markdown(
@@ -65,6 +73,10 @@ st.markdown(
     ask questions using natural language.
     """
 )
+if st.button("Clear Session"):
+    chroma_manager.delete_collection(
+        session_id=st.session_state.session_id
+    )
 
 # -------------------------
 # File Upload
@@ -163,7 +175,8 @@ if uploaded_files:
             # -------------------------
 
             chroma_manager.add_documents(
-                chunks
+                chunks,
+                session_id=(st.session_state.session_id),
             )
 
             app_logger.info(
@@ -229,7 +242,8 @@ if user_question:
         st.markdown(user_question)
 
     response = chat_service.get_response(
-        user_question
+        question=user_question,
+        session_id=(st.session_state.session_id),
     )
     answer = response["answer"]
     sources = response["sources"]

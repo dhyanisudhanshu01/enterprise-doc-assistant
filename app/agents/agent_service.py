@@ -8,11 +8,13 @@ class AgentService:
     def answer_question(
         self,
         question: str,
+        session_id: str,
     ):
 
         answer, chunks = (
             enterprise_crew.run(
-                question
+                question,
+                session_id=session_id,
             )
         )
 

@@ -23,11 +23,13 @@ class EnterpriseCrew:
     def run(
         self,
         question: str,
+        session_id: str,
     ):
 
         retrieved_chunks = (
             retrieval_service.retrieve(
                 question,
+                session_id=session_id,
                 top_k=settings.top_k_results,
             )
         )
