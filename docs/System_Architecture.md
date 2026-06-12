@@ -4,31 +4,9 @@
 
 The system follows a layered architecture to separate concerns and improve maintainability.
 
-```mermaid
-flowchart TD
 
-A[User]
-B[Streamlit UI]
-C[Document Ingestion]
-D[Chunking Service]
-E[Gemini Embeddings]
-F[Session-Specific ChromaDB]
-G[Retrieval Service]
-H[CrewAI Agents]
-I[Gemini LLM]
-J[Grounded Response]
+![alt text](../image.png)
 
-A --> B
-B --> C
-C --> D
-D --> E
-E --> F
-B --> G
-G --> F
-G --> H
-H --> I
-I --> J
-```
 
 ## Presentation Layer
 
